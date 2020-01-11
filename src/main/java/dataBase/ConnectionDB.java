@@ -1,8 +1,14 @@
 package dataBase;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
+
+import com.sun.deploy.util.Property;
 import org.apache.log4j.Logger;
 
 public class ConnectionDB {
@@ -17,9 +23,18 @@ public class ConnectionDB {
             log.info("Не удалось найти драйвер для базы данных");
             e.printStackTrace();
         }
+        File file = new File("G:\\sberMiniBank2TMP_work\\src\\main\\resources\\dataBase.properties");
+
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileReader(file));
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.info("Фаил с данными подключения не найден");
+        }
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sberminibank?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF8", "root", "Terma137099");
+            connection = DriverManager.getConnection(properties.getProperty("url"), properties.getProperty("username"), properties.getProperty("password"));
         } catch (SQLException e) {
             System.out.println("Подключение к базе не удалось");
             log.info("Подключение к базе не удалось");
